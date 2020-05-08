@@ -1,14 +1,11 @@
 ---
 all:
   vars:
-    confluent_server_enabled: false
-    jolokia_enabled: False
+    jolokia_enabled: false
     ansible_connection: ssh
     ansible_user: cloud_user
     ansible_become: true
     ansible_ssh_pass: headset1234
-   #host_key_checking: False
-    health_checks_enabled: False
     #### Setting Proxy Environment variables ####
     ## To set proxy env vars for the duration of playbook run, uncomment below block and set as necessary
 
@@ -30,12 +27,12 @@ all:
     #   realm: <KDC server realm eg. confluent.example.com>
     #   kdc_hostname: <hostname of machine with KDC running eg. ip-172-31-45-82.us-east-2.compute.internal>
     #   admin_hostname: <hostname of machine with KDC running eg. ip-172-31-45-82.us-east-2.compute.internal>
-    security_mode: ssl
+    #security_mode: ssl
     #### TLS Configuration ####
     ## By default, data will NOT be encrypted. To turn on TLS encryption, uncomment this line
     ssl_enabled: true
     ## By default, the components will be configured with One-Way TLS, to turn on TLS mutual auth, uncomment this line:
-    ssl_mutual_auth_enabled: true
+    #ssl_mutual_auth_enabled: true
     ## By default, the certs for this configuration will be self signed, to deploy custom certificates there are two options.
     ## Option 1: Custom Certs
     ## You will need to provide the path to the Certificate Authority Cert used to sign each hosts' certs
@@ -48,19 +45,19 @@ all:
     #ssl_key_password: <password for key fo
     ## Option 2: Custom Keystores and Truststores
     ## CP-Ansible can move keystores/truststores to their corresponding hosts and configure the components to use them. Set These vars
-    ssl_provided_keystore_and_truststore: true
-    ssl_keystore_filepath: "/tmp/certs/kafka.server.keystore.jks"
-    ssl_keystore_key_password: serversecret
-    ssl_keystore_store_password: serversecret
-    ssl_truststore_filepath: "/tmp/certs/kafka.server.truststore.jks"
-    ssl_truststore_password: serversecret
-    ssl_truststore_ca_cert_alias: CARoot
+    #ssl_provided_keystore_and_truststore: true
+    #ssl_keystore_filepath: "/tmp/certs/kafka.server.keystore.jks"
+    #ssl_keystore_key_password: serversecret
+    #ssl_keystore_store_password: serversecret
+    #ssl_truststore_filepath: "/tmp/certs/kafka.server.truststore.jks"
+    #ssl_truststore_password: serversecret
+    #ssl_truststore_ca_cert_alias: CARoot 
     #### Certificate Regeneration ####
     ## When using self signed certificates, each playbook run will regenerate the CA, to turn this off, uncomment this line:
     # regenerate_ca: false
     ## By default, if keystore/truststore files exists for a component, the playbook will not recreate them
     ## To recreate the keystores and truststores uncomment this line:
-    # regenerate_keystore_and_truststore: true
+    #regenerate_keystore_and_truststore: true
 
     #### Monitoring Configuration ####
     ## Jolokia is enabled by default. The Jolokia jar gets pulled from the internet and enabled on all the components
@@ -208,7 +205,7 @@ zookeeper:
   #   zookeeper_user: custom-user
   #   zookeeper_group: custom-group
   hosts:
-    172.31.105.129: 
+    172.31.26.130:
       ## By default the first host will get zookeeper id=1, second gets id=2. Set zookeeper_id to customize
       # zookeeper_id: 2
 
@@ -218,4 +215,7 @@ zookeeper:
 
 kafka_broker:
   hosts:
-    172.31.110.251:
+    172.31.16.204:
+      kafka:
+        broker:
+          id: 1

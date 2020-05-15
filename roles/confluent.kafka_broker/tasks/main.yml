@@ -36,11 +36,11 @@
     keystore_storepass: "{{kafka_broker_keystore_storepass}}"
     keystore_keypass: "{{kafka_broker_keystore_keypass}}"
     service_name: kafka_broker
-    hostnames: "{{ kafka_broker_listeners | get_hostnames(inventory_hostname) | unique }}"
+    hostnames: "{{ [ansible_fqdn] + kafka_broker_listeners | get_hostnames(inventory_hostname) | unique }}"
     ca_cert_path: "{{kafka_broker_ca_cert_path}}"
     cert_path: "{{kafka_broker_cert_path}}"
     key_path: "{{kafka_broker_key_path}}"
-  when: kafka_broker_listeners | ssl_required(ssl_enabled)
+  when: kafka_broker_listeners | ssl_required(ssl_enabled) or zookeeper_ssl_enabled|bool
 
 - include_tasks: rbac.yml
   when: rbac_enabled|bool
@@ -53,7 +53,7 @@
     kerberos_user: "{{kafka_broker_user}}"
     kerberos_keytab_path: "{{kafka_broker_kerberos_keytab_path}}"
     kerberos_handler: "Restart Kafka"
-  when: "'GSSAPI' in kafka_broker_sasl_enabled_mechanisms"
+  when: "'GSSAPI' in kafka_broker_sasl_enabled_mechanisms or zookeeper_sasl_protocol == 'kerberos'"
 
 - name: Set Permissions on /var/lib/kafka
   file:
@@ -115,7 +115,7 @@
     mode: 0640
     owner: "{{kafka_broker_user}}"
     group: "{{kafka_broker_group}}"
-  when: "'GSSAPI' in kafka_broker_sasl_enabled_mechanisms"
+  when: "'GSSAPI' in kafka_broker_sasl_enabled_mechanisms or zookeeper_sasl_protocol in ['kerberos', 'digest']"
   notify:
     - Restart Kafka
 
